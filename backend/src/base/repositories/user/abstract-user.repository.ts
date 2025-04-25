@@ -5,7 +5,7 @@ import { User } from "@prisma/client";
 
 export abstract class AbstractUserRepository {
     abstract createUser(createUserDto: CreateUserDto): Promise<User>
-    abstract loginUser(email: string, password: string): Promise<User>
+    abstract loginUser(email: string, password: string): Promise<responseModel>
     abstract updateUser(id: string, user: updateUserDto): Promise<User>
     abstract getUser(id: string): Promise<User>
     abstract deleteUser(id: string): Promise<responseModel>

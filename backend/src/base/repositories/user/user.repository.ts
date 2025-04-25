@@ -23,7 +23,7 @@ export class UserRepository implements AbstractUserRepository {
         }
     }
 
-    async loginUser(email: string, password: string): Promise<User> {
+    async loginUser(email: string, password: string): Promise<responseModel> {
 
         const user = await this.prismaService.user.findUnique({
             where: {
@@ -31,13 +31,23 @@ export class UserRepository implements AbstractUserRepository {
             }
         });
 
-        const isPasswordValid = await Utils.matchPassword(password, user.password);
-
-        if (!user || !isPasswordValid) {
+        if (!user) {
             throw new UnauthorizedException('Usuário e/ou senha inválidos');
         }
 
-        return user;
+        const isPasswordValid = await Utils.matchPassword(password, user.password);
+
+        if (!isPasswordValid) {
+            throw new UnauthorizedException('Usuário e/ou senha inválidos');
+        }
+
+        const loggedResponse: responseModel = {
+            data: user,
+            message: "Login efetuado com sucesso",
+
+        }
+
+        return loggedResponse;
 
     }
 
