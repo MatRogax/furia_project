@@ -11,9 +11,12 @@ model User {
   id            String         @id @default(uuid()) @db.Uuid
   name          String
   email         String         @unique
+  password      String
+  avatarUrl     String?
+  bio           String?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
-  conversations Conversation[]
+  conversations Conversation[] 
   messages      Message[]
 }
 
