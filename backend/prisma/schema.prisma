@@ -37,7 +37,7 @@ model Message {
   createdAt      DateTime     @default(now())
   conversationId String       @db.Uuid
   userId         String?      @db.Uuid
-  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   user           User?        @relation(fields: [userId], references: [id])
 }
 
