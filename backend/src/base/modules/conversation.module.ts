@@ -9,5 +9,6 @@ import { AbstractConversationRepository } from '@repositories/conversation/abstr
     imports: [DatabaseModule],
     controllers: [],
     providers: [{ provide: AbstractConversationRepository, useClass: ConversationRepository }],
+    exports: [AbstractConversationRepository]
 })
 export class ConversationModule { }

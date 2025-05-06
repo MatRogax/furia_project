@@ -7,5 +7,6 @@ import { AbstractMessageRepository } from '@repositories/message/abstract-messag
     imports: [DatabaseModule],
     controllers: [],
     providers: [{ provide: AbstractMessageRepository, useClass: MessageRepository }],
+    exports: [AbstractMessageRepository]
 })
 export class MessageModule { }

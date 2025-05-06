@@ -1,8 +1,9 @@
 import { PrismaService } from "@database/prisma.service";
 import { AbstractConversationRepository } from "@repositories/conversation/abstract-conversation.repository";
 import { Conversation } from "@prisma/client";
-import { BadRequestException, InternalServerErrorException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
 
+@Injectable()
 export class ConversationRepository implements AbstractConversationRepository {
     constructor(private readonly prismaService: PrismaService) { }
     async findOrCreateConversation(userId: string): Promise<Conversation> {

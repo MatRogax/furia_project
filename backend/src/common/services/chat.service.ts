@@ -1,15 +1,16 @@
 import { ResponseChatModel } from "@common/models/response-chat.model";
 import { Role } from "@dtos/create-messae.dto";
-import { InternalServerErrorException } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { AbstractConversationRepository } from "@repositories/conversation/abstract-conversation.repository";
 import { ConversationRepository } from "@repositories/conversation/conversation.repository";
-import { MessageRepository } from "@repositories/message/message.repository";
+import { AbstractMessageRepository } from "@repositories/message/abstract-message.repository";
 import { OpenAiService } from "@services/openai.service";
-import { InternalServerError } from "openai";
 
+@Injectable()
 export class ChatService {
     constructor(
-        private readonly messageRepository: MessageRepository,
-        private readonly conversationRepository: ConversationRepository,
+        private readonly messageRepository: AbstractMessageRepository,
+        private readonly conversationRepository: AbstractConversationRepository,
         private readonly openAiService: OpenAiService,
     ) { }
 
@@ -43,7 +44,7 @@ export class ChatService {
             return responseChat;
 
         } catch (error) {
-            throw new InternalServerErrorException(`Erro ao processar a resposta para pergunta ${userMessage}: ${error.message}`);
+            throw new InternalServerErrorException(`Erro ao processar a resposta para pergunta (${userMessage}): ${error.message}`);
         }
     }
 }
