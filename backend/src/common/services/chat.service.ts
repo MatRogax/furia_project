@@ -4,14 +4,15 @@ import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { AbstractConversationRepository } from "@repositories/conversation/abstract-conversation.repository";
 import { ConversationRepository } from "@repositories/conversation/conversation.repository";
 import { AbstractMessageRepository } from "@repositories/message/abstract-message.repository";
-import { OpenAiService } from "@services/openai.service";
+import { GeminiService } from "./openai.service";
+
 
 @Injectable()
 export class ChatService {
     constructor(
         private readonly messageRepository: AbstractMessageRepository,
         private readonly conversationRepository: AbstractConversationRepository,
-        private readonly openAiService: OpenAiService,
+        private readonly openAiService: GeminiService,
     ) { }
 
     async responseHandlerMessage(userMessage: string, userId?: string) {
@@ -30,9 +31,9 @@ export class ChatService {
 
             const assistantMessage = await this.messageRepository.createMessage({
                 content: responseMessage,
-                role: Role.BOT,
                 userId: userId,
-                conversationId: conversation.id
+                role: Role.BOT,
+                conversationId: conversation.id,
             })
 
             const responseChat: ResponseChatModel = {

@@ -1,29 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { OpenAI } from 'openai';
-
+import { GoogleGenerativeAI } from '@google/generative-ai';
 @Injectable()
-export class OpenAiService {
-    private openai: OpenAI;
+export class GeminiService {
+    private genAI: GoogleGenerativeAI;
 
     constructor(private configService: ConfigService) {
-        const configuration = {
-            apiKey: this.configService.get<string>('OPENAI_API_KEY'),
-        };
-        this.openai = new OpenAI(configuration);
-    }
-    async getResponse(messages: any[]): Promise<string> {
-        try {
-            const response = await this.openai.chat.completions.create({
-                model: 'gpt-3.5-turbo',
-                store: true,
-                messages,
-            });
-            return response.choices[0].message.content;
-        } catch (error) {
-            console.error('Erro ao consultar OpenAI:', error);
-            throw new Error('Erro ao gerar resposta com IA. Tente novamente mais tarde.');
-        }
+        this.genAI = new GoogleGenerativeAI(
+            this.configService.get<string>('GEMINI_API_KEY')
+        );
     }
 
-}
+    async getResponse(messages: { role: 'user' | 'assistant' | 'system'; content: string }[]) {
+        try {
+            console.log(messages);
+            console.log(this.genAI);
+
+            const model = this.genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+
+            const prompt = messages.map(message => `${message.role}: ${message.content}`).join('\n');
+
+            const result = await model.generateContent(prompt);
+            return result.response.text() || 'Resposta não gerada.';
+        } catch (error) {
+            console.error('Erro Gemini:', error);
+            throw new BadRequestException(
+                'Falha ao gerar resposta com IA. Tente novamente mais tarde.'
+            );
+        }
+    }
+}   
